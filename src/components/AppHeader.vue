@@ -1,5 +1,5 @@
 <template>
-  <header class="flex justify-between p-8 border-b border-slate-300">
+  <header class="flex justify-between p-8 border-b border-slate-200">
     <div class="flex items-center gap-4">
       <img src="/logo.png" alt="Logo" />
       <div>
