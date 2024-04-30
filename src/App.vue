@@ -1,9 +1,12 @@
 <script setup>
 import AppHeader from '@/components/AppHeader.vue'
-import CardList from './components/CardList.vue'
+import CardList from '@/components/CardList.vue'
+import AppDrawer from '@/components/AppDrawer.vue'
 </script>
 
 <template>
+  <AppDrawer v-if="false" />
+
   <div class="w-4/5 m-auto mt-14 bg-white rounded-xl shadow-xl">
     <AppHeader />
     <div class="p-10">
@@ -12,5 +15,3 @@ import CardList from './components/CardList.vue'
     </div>
   </div>
 </template>
-
-<style scoped></style>

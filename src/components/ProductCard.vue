@@ -19,12 +19,12 @@ defineProps({
       @click.stop="$emit('onClickFavorite')"
     />
 
-    <img :src="imageUrl" alt="Sneaker" />
+    <img :src="`/vue-sneakers/${imageUrl}`" alt="Sneaker" />
     <p class="mt-2">{{ title }}</p>
     <div class="flex justify-between mt-5">
       <div class="flex flex-col">
         <span class="text-slate-400">Цена:</span>
-        <b>{{ price }} руб.</b>
+        <b>{{ price }} ₽</b>
       </div>
       <img
         :src="isAdded ? '/vue-sneakers/checked.svg' : '/vue-sneakers/plus.svg'"

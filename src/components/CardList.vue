@@ -14,7 +14,7 @@ const onAddProductToFavorite = () => {
   <div class="grid grid-cols-4 gap-5">
     <ProductCard
       title="Мужские Кроссовки Nike Blazer Mid Suede"
-      image-url="/vue-sneakers/sneakers/sneakers-1.jpg"
+      image-url="sneakers/sneakers-1.jpg"
       :price="12999"
       :is-favorite="true"
       :is-added="true"
