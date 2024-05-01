@@ -10,7 +10,7 @@ defineProps({
 
 <template>
   <div
-    class="relative p-8 cursor-pointer bg-white border border-slate-100 rounded-3xl hover:-translate-y-2 hover:shadow-xl transition"
+    class="flex flex-col relative p-8 cursor-pointer bg-white border border-slate-100 rounded-3xl hover:-translate-y-2 hover:shadow-xl transition"
   >
     <img
       class="absolute top-8 left-8"
@@ -20,7 +20,7 @@ defineProps({
     />
 
     <img :src="`/vue-sneakers/${imageUrl}`" alt="Sneaker" />
-    <p class="mt-2">{{ title }}</p>
+    <p class="flex-1 mt-2">{{ title }}</p>
     <div class="flex justify-between mt-5">
       <div class="flex flex-col">
         <span class="text-slate-400">Цена:</span>
