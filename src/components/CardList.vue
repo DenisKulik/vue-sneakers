@@ -22,8 +22,8 @@ const onAddProductToFavorite = () => {
       :title="item.title"
       :image-url="item.imageUrl"
       :price="item.price"
-      :is-favorite="false"
-      :is-added="false"
+      :is-favorite="item.isFavorite"
+      :is-added="items.isAdded"
       @onClickAdd="onAddProductToCart"
       @onClickFavorite="onAddProductToFavorite"
     />
