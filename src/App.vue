@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, reactive, watch } from 'vue'
-import axios from 'axios'
+
+import { instance } from '@/api'
 
 import AppHeader from '@/components/AppHeader.vue'
 import CardList from '@/components/CardList.vue'
@@ -33,14 +34,55 @@ const fetchItems = async () => {
       params.title = `*${filters.searchQuery}*`
     }
 
-    const { data } = await axios.get('https://9e0d0b9b6eb7d8ab.mokky.dev/items', { params })
-    items.value = data
+    const { data } = await instance.get('items', { params })
+    items.value = data.map((item) => ({
+      ...item,
+      isFavorite: false,
+      favoriteId: null,
+      isAdded: false
+    }))
   } catch (e) {
     console.error(e.message)
   }
 }
 
-onMounted(fetchItems)
+const fetchFavorites = async () => {
+  try {
+    const { data: favorites } = await instance.get('favorites')
+    items.value = items.value.map((item) => {
+      const favorite = favorites.find((favorite) => favorite.productId === item.id)
+
+      if (!favorite) return item
+
+      return { ...item, isFavorite: true, favoriteId: favorite.id }
+    })
+  } catch (e) {
+    console.error(e.message)
+  }
+}
+
+const addToFavorite = async (item) => {
+  try {
+    const { id: productId, favoriteId, isFavorite } = item
+
+    if (isFavorite) {
+      await instance.delete(`favorites/${favoriteId}`)
+      item.favoriteId = null
+    } else {
+      const { data } = await instance.post('favorites', { productId })
+      item.favoriteId = data.id
+    }
+
+    item.isFavorite = !isFavorite
+  } catch (e) {
+    console.error(e.message)
+  }
+}
+
+onMounted(async () => {
+  await fetchItems()
+  await fetchFavorites()
+})
 watch(filters, fetchItems)
 </script>
 
@@ -57,7 +99,7 @@ watch(filters, fetchItems)
           <BaseInput :value="filters.searchQuery" @input="onChangeInput" />
         </div>
       </div>
-      <CardList :items="items" />
+      <CardList :items="items" @onAddToFavorite="addToFavorite" />
     </div>
   </div>
 </template>

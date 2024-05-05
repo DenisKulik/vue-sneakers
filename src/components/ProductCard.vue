@@ -1,11 +1,9 @@
 <script setup>
 defineProps({
-  title: String,
-  imageUrl: String,
-  price: Number,
-  isFavorite: Boolean,
-  isAdded: Boolean
+  item: Object
 })
+
+const emit = defineEmits(['onClickFavorite', 'onClickAdd'])
 </script>
 
 <template>
@@ -14,22 +12,22 @@ defineProps({
   >
     <img
       class="absolute top-8 left-8"
-      :src="isFavorite ? '/vue-sneakers/like-2.svg' : '/vue-sneakers/like-1.svg'"
+      :src="item.isFavorite ? '/vue-sneakers/like-2.svg' : '/vue-sneakers/like-1.svg'"
       alt="Like"
-      @click.stop="$emit('onClickFavorite')"
+      @click.stop="emit('onClickFavorite', item)"
     />
 
-    <img :src="`/vue-sneakers/${imageUrl}`" alt="Sneaker" />
-    <p class="flex-1 mt-2">{{ title }}</p>
+    <img :src="`/vue-sneakers/${item.imageUrl}`" alt="Sneaker" />
+    <p class="flex-1 mt-2">{{ item.title }}</p>
     <div class="flex justify-between mt-5">
       <div class="flex flex-col">
         <span class="text-slate-400">Цена:</span>
-        <b>{{ price }} ₽</b>
+        <b>{{ item.price }} ₽</b>
       </div>
       <img
-        :src="isAdded ? '/vue-sneakers/checked.svg' : '/vue-sneakers/plus.svg'"
+        :src="item.isAdded ? '/vue-sneakers/checked.svg' : '/vue-sneakers/plus.svg'"
         alt="Add to cart"
-        @click.stop="$emit('onClickAdd')"
+        @click.stop="emit('onClickAdd', item)"
       />
     </div>
   </div>

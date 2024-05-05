@@ -5,12 +5,14 @@ defineProps({
   items: Array
 })
 
-const onAddProductToCart = () => {
-  console.log('onAddProductToCart')
+const emit = defineEmits(['onAddToFavorite', 'onAddToCart'])
+
+const onAddToCart = (item) => {
+  console.log('onAddToCart', item)
 }
 
-const onAddProductToFavorite = () => {
-  console.log('onAddProductToFavorite')
+const onAddToFavorite = (item) => {
+  emit('onAddToFavorite', item)
 }
 </script>
 
@@ -19,13 +21,9 @@ const onAddProductToFavorite = () => {
     <ProductCard
       v-for="item in items"
       :key="item.id"
-      :title="item.title"
-      :image-url="item.imageUrl"
-      :price="item.price"
-      :is-favorite="item.isFavorite"
-      :is-added="items.isAdded"
-      @onClickAdd="onAddProductToCart"
-      @onClickFavorite="onAddProductToFavorite"
+      :item="item"
+      @onClickAdd="onAddToCart"
+      @onClickFavorite="onAddToFavorite"
     />
   </div>
 </template>
