@@ -1,3 +1,9 @@
+<script setup>
+import { defineEmits } from 'vue'
+
+const emit = defineEmits(['openDrawer'])
+</script>
+
 <template>
   <header class="flex justify-between p-8 border-b border-slate-200">
     <div class="flex items-center gap-4">
@@ -10,7 +16,10 @@
 
     <nav class="flex items-center">
       <ul class="flex items-center gap-10">
-        <li class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
+        <li
+          class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black"
+          @click.stop="emit('openDrawer')"
+        >
           <img src="/cart.svg" alt="Cart" />
           <b>1205 ₽</b>
         </li>

@@ -10,6 +10,7 @@ import BaseInput from '@/components/BaseInput.vue'
 import BaseSelect from '@/components/BaseSelect.vue'
 
 const items = ref([])
+const isDrawerOpen = ref(false)
 
 const filters = reactive({
   searchQuery: '',
@@ -79,6 +80,14 @@ const addToFavorite = async (item) => {
   }
 }
 
+const openDrawer = () => {
+  isDrawerOpen.value = true
+}
+
+const closeDrawer = () => {
+  isDrawerOpen.value = false
+}
+
 onMounted(async () => {
   await fetchItems()
   await fetchFavorites()
@@ -87,10 +96,9 @@ watch(filters, fetchItems)
 </script>
 
 <template>
-  <AppDrawer v-if="false" />
-
+  <AppDrawer v-if="isDrawerOpen" @close="closeDrawer" />
   <div class="w-4/5 m-auto mt-14 bg-white rounded-xl shadow-xl">
-    <AppHeader />
+    <AppHeader @open-drawer="openDrawer" />
     <div class="p-10">
       <div class="flex flex-1 justify-between items-center mb-10">
         <h2 class="mb-8 text-3xl font-bold">Все кроссовки</h2>
@@ -99,7 +107,7 @@ watch(filters, fetchItems)
           <BaseInput :value="filters.searchQuery" @input="onChangeInput" />
         </div>
       </div>
-      <CardList :items="items" @onAddToFavorite="addToFavorite" />
+      <CardList :items="items" @add-to-favorite="addToFavorite" />
     </div>
   </div>
 </template>

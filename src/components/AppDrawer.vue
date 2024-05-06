@@ -1,5 +1,8 @@
 <script setup>
+import { defineEmits } from 'vue'
 import CartItem from '@/components/CartItem.vue'
+
+const emit = defineEmits(['close'])
 </script>
 
 <template>
@@ -10,7 +13,7 @@ import CartItem from '@/components/CartItem.vue'
         src="/arrow-next-black.svg"
         alt="Close"
         class="cursor-pointer rotate-180 opacity-30 hover:opacity-100 hover:-translate-x-1 transition"
-        @click="$emit('close')"
+        @click="emit('close')"
       />
       <h2 class="text-2xl font-bold">Корзина</h2>
     </div>
