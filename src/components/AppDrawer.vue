@@ -1,18 +1,14 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue'
 import CartItem from '@/components/CartItem.vue'
 
 defineProps({
   cart: Array,
   totalPrice: Number,
-  vatPrice: Number
+  vatPrice: Number,
+  isLoading: Boolean
 })
 
-const emit = defineEmits(['close', 'removeItem'])
-
-const onRemoveItem = (item) => {
-  emit('removeItem', item)
-}
+const emit = defineEmits(['close', 'removeItem', 'createOrder'])
 </script>
 
 <template>
@@ -28,7 +24,12 @@ const onRemoveItem = (item) => {
       <h2 class="text-2xl font-bold">Корзина</h2>
     </div>
     <div class="flex flex-1 flex-col gap-4">
-      <CartItem v-for="item in cart" :key="item.id" :item="item" @on-remove="onRemoveItem" />
+      <CartItem
+        v-for="item in cart"
+        :key="item.id"
+        :item="item"
+        @on-remove="emit('removeItem', item)"
+      />
     </div>
     <div class="flex flex-col gap-4 my-5">
       <div class="flex justify-between gap-2">
@@ -45,8 +46,10 @@ const onRemoveItem = (item) => {
 
       <button
         class="flex justify-center items-center gap-5 w-full mt-4 py-3 text-white bg-lime-500 rounded-xl hover:bg-lime-600 active:bg-lime-700 disabled:bg-slate-300 transition"
+        :disabled="!cart.length || isLoading"
+        @click.stop="emit('createOrder')"
       >
-        Оформить заказ
+        {{ isLoading ? 'Загрузка...' : 'Оформить заказ' }}
         <img src="/arrow-next.svg" alt="Checkout" class="ml-3" />
       </button>
     </div>

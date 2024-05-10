@@ -12,6 +12,7 @@ import BaseSelect from '@/components/BaseSelect.vue'
 const items = ref([])
 const cart = ref([])
 const isDrawerOpen = ref(false)
+const isLoading = ref(false)
 
 const filters = reactive({
   searchQuery: '',
@@ -101,6 +102,28 @@ const addToFavorite = async (item) => {
   }
 }
 
+const clearCart = () => {
+  cart.value = []
+  items.value = items.value.map((item) => {
+    return { ...item, isAdded: false }
+  })
+}
+
+const createOrder = async () => {
+  try {
+    isLoading.value = true
+    await instance.post('orders', {
+      items: cart.value,
+      total: totalPrice.value
+    })
+    clearCart()
+  } catch (e) {
+    console.error(e.message)
+  } finally {
+    isLoading.value = false
+  }
+}
+
 const openDrawer = () => {
   isDrawerOpen.value = true
 }
@@ -122,6 +145,8 @@ watch(filters, fetchItems)
     :total-price="totalPrice"
     :vat-price="vatPrice"
     :cart="cart"
+    :is-loading="isLoading"
+    @create-order="createOrder"
     @close="closeDrawer"
     @remove-item="toggleCartItem"
   />

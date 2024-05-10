@@ -6,14 +6,6 @@ defineProps({
 })
 
 const emit = defineEmits(['addToFavorite', 'addToCart'])
-
-const onAddToCart = (item) => {
-  emit('addToCart', item)
-}
-
-const onAddToFavorite = (item) => {
-  emit('addToFavorite', item)
-}
 </script>
 
 <template>
@@ -22,8 +14,8 @@ const onAddToFavorite = (item) => {
       v-for="item in items"
       :key="item.id"
       :item="item"
-      @on-click-add="onAddToCart"
-      @on-click-favorite="onAddToFavorite"
+      @on-click-add="emit('addToCart', item)"
+      @on-click-favorite="emit('addToFavorite', item)"
     />
   </div>
 </template>
