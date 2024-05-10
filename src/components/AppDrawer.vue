@@ -1,8 +1,16 @@
 <script setup>
-import { defineEmits } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 import CartItem from '@/components/CartItem.vue'
 
+defineProps({
+  cart: Array
+})
+
 const emit = defineEmits(['close'])
+
+const onRemoveItem = (item) => {
+  emit('removeItem', item)
+}
 </script>
 
 <template>
@@ -18,11 +26,7 @@ const emit = defineEmits(['close'])
       <h2 class="text-2xl font-bold">Корзина</h2>
     </div>
     <div class="flex flex-1 flex-col gap-4">
-      <CartItem
-        title="Мужские Кроссовки Nike Blazer Mid Suede"
-        imageUrl="sneakers/sneakers-1.jpg"
-        :price="12999"
-      />
+      <CartItem v-for="item in cart" :key="item.id" :item="item" @on-remove="onRemoveItem" />
     </div>
     <div class="flex flex-col gap-4 my-5">
       <div class="flex justify-between gap-2">

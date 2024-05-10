@@ -8,7 +8,7 @@ defineProps({
 const emit = defineEmits(['addToFavorite', 'addToCart'])
 
 const onAddToCart = (item) => {
-  console.log('onAddToCart', item)
+  emit('addToCart', item)
 }
 
 const onAddToFavorite = (item) => {

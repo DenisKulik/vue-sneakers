@@ -10,6 +10,7 @@ import BaseInput from '@/components/BaseInput.vue'
 import BaseSelect from '@/components/BaseSelect.vue'
 
 const items = ref([])
+const cart = ref([])
 const isDrawerOpen = ref(false)
 
 const filters = reactive({
@@ -62,6 +63,20 @@ const fetchFavorites = async () => {
   }
 }
 
+const addToCart = (item) => {
+  item.isAdded = true
+  cart.value.push(item)
+}
+
+const removeFromCart = (item) => {
+  cart.value = cart.value.filter((cartItem) => cartItem.id !== item.id)
+  item.isAdded = false
+}
+
+const toggleCartItem = async (item) => {
+  item.isAdded ? removeFromCart(item) : addToCart(item)
+}
+
 const addToFavorite = async (item) => {
   try {
     const { id: productId, favoriteId, isFavorite } = item
@@ -96,7 +111,7 @@ watch(filters, fetchItems)
 </script>
 
 <template>
-  <AppDrawer v-if="isDrawerOpen" @close="closeDrawer" />
+  <AppDrawer :cart="cart" v-if="isDrawerOpen" @close="closeDrawer" @remove-item="toggleCartItem" />
   <div class="w-4/5 m-auto mt-14 bg-white rounded-xl shadow-xl">
     <AppHeader @open-drawer="openDrawer" />
     <div class="p-10">
@@ -107,7 +122,7 @@ watch(filters, fetchItems)
           <BaseInput :value="filters.searchQuery" @input="onChangeInput" />
         </div>
       </div>
-      <CardList :items="items" @add-to-favorite="addToFavorite" />
+      <CardList :items="items" @add-to-favorite="addToFavorite" @add-to-cart="toggleCartItem" />
     </div>
   </div>
 </template>
