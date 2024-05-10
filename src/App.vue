@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, reactive, watch } from 'vue'
+import { onMounted, ref, reactive, computed, watch } from 'vue'
 
 import { instance } from '@/api'
 
@@ -17,6 +17,12 @@ const filters = reactive({
   searchQuery: '',
   sortBy: 'title'
 })
+
+const totalPrice = computed(() => {
+  return cart.value.reduce((acc, item) => acc + item.price, 0)
+})
+
+const vatPrice = computed(() => Math.round(totalPrice.value * 0.05))
 
 const onChangeSelect = (event) => {
   filters.sortBy = event.target.value
@@ -111,9 +117,16 @@ watch(filters, fetchItems)
 </script>
 
 <template>
-  <AppDrawer :cart="cart" v-if="isDrawerOpen" @close="closeDrawer" @remove-item="toggleCartItem" />
+  <AppDrawer
+    v-if="isDrawerOpen"
+    :total-price="totalPrice"
+    :vat-price="vatPrice"
+    :cart="cart"
+    @close="closeDrawer"
+    @remove-item="toggleCartItem"
+  />
   <div class="w-4/5 m-auto mt-14 bg-white rounded-xl shadow-xl">
-    <AppHeader @open-drawer="openDrawer" />
+    <AppHeader :total-price="totalPrice" @open-drawer="openDrawer" />
     <div class="p-10">
       <div class="flex flex-1 justify-between items-center mb-10">
         <h2 class="mb-8 text-3xl font-bold">Все кроссовки</h2>

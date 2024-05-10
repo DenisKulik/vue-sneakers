@@ -3,10 +3,12 @@ import { defineProps, defineEmits } from 'vue'
 import CartItem from '@/components/CartItem.vue'
 
 defineProps({
-  cart: Array
+  cart: Array,
+  totalPrice: Number,
+  vatPrice: Number
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'removeItem'])
 
 const onRemoveItem = (item) => {
   emit('removeItem', item)
@@ -32,13 +34,13 @@ const onRemoveItem = (item) => {
       <div class="flex justify-between gap-2">
         <span>Итого:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <b>12990 ₽</b>
+        <b>{{ totalPrice }} ₽</b>
       </div>
 
       <div class="flex justify-between gap-2">
         <span>Налог 5%:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <b>500 ₽</b>
+        <b>{{ vatPrice }} ₽</b>
       </div>
 
       <button
