@@ -124,6 +124,15 @@ const createOrder = async () => {
   }
 }
 
+const getCartFromLocalStorage = () => {
+  const localCart = localStorage.getItem('cart')
+  cart.value = localCart ? JSON.parse(localCart) : []
+  items.value = items.value.map((item) => {
+    const cartItem = cart.value.find((cartItem) => cartItem.id === item.id)
+    return cartItem ? { ...item, isAdded: true } : item
+  })
+}
+
 const openDrawer = () => {
   isDrawerOpen.value = true
 }
@@ -135,8 +144,17 @@ const closeDrawer = () => {
 onMounted(async () => {
   await fetchItems()
   await fetchFavorites()
+  getCartFromLocalStorage()
 })
+
 watch(filters, fetchItems)
+watch(
+  cart,
+  () => {
+    localStorage.setItem('cart', JSON.stringify(cart.value))
+  },
+  { deep: true }
+)
 </script>
 
 <template>
