@@ -1,5 +1,6 @@
 <script setup>
 import CartItem from '@/components/CartItem.vue'
+import InfoBlock from '@/components/InfoBlock.vue'
 
 defineProps({
   cart: Array,
@@ -13,7 +14,7 @@ const emit = defineEmits(['close', 'removeItem', 'createOrder'])
 
 <template>
   <div class="fixed top-0 left-0 w-full h-full bg-slate-900 opacity-50 z-10"></div>
-  <div class="fixed top-0 right-0 w-96 h-full p-8 bg-white z-20">
+  <div class="flex flex-col fixed top-0 right-0 w-96 h-full p-8 bg-white z-20">
     <div class="flex items-center gap-5 mb-7">
       <img
         src="/arrow-next-black.svg"
@@ -23,6 +24,15 @@ const emit = defineEmits(['close', 'removeItem', 'createOrder'])
       />
       <h2 class="text-2xl font-bold">Корзина</h2>
     </div>
+
+    <div v-if="!cart.length" class="h-full flex">
+      <InfoBlock
+        title="Корзина пустая"
+        image-url="package-icon.png"
+        description="Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ."
+      />
+    </div>
+
     <div class="flex flex-1 flex-col gap-4">
       <CartItem
         v-for="item in cart"
@@ -31,7 +41,8 @@ const emit = defineEmits(['close', 'removeItem', 'createOrder'])
         @on-remove="emit('removeItem', item)"
       />
     </div>
-    <div class="flex flex-col gap-4 my-5">
+
+    <div v-if="cart.length" class="flex flex-col gap-4 my-5">
       <div class="flex justify-between gap-2">
         <span>Итого:</span>
         <div class="flex-1 border-b border-dashed"></div>
