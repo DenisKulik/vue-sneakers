@@ -3,13 +3,19 @@ import { onMounted, ref, reactive, computed, watch } from 'vue'
 
 import { instance } from '@/api'
 
+import { useItemsStore } from '@/stores/itemsStore'
+import { storeToRefs } from 'pinia'
+
 import AppHeader from '@/components/AppHeader.vue'
 import CardList from '@/components/CardList.vue'
 import AppDrawer from '@/components/AppDrawer.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseSelect from '@/components/BaseSelect.vue'
 
-const items = ref([])
+const itemsStore = useItemsStore()
+const { items } = storeToRefs(itemsStore)
+const { toggleAddedToCart, toggleFavoriteItem, fetchItems } = itemsStore
+
 const cart = ref([])
 const isDrawerOpen = ref(false)
 const isLoading = ref(false)
@@ -33,28 +39,6 @@ const onChangeInput = (event) => {
   filters.searchQuery = event.target.value
 }
 
-const fetchItems = async () => {
-  try {
-    const params = {
-      sortBy: filters.sortBy
-    }
-
-    if (filters.searchQuery) {
-      params.title = `*${filters.searchQuery}*`
-    }
-
-    const { data } = await instance.get('items', { params })
-    items.value = data.map((item) => ({
-      ...item,
-      isFavorite: false,
-      favoriteId: null,
-      isAdded: false
-    }))
-  } catch (e) {
-    console.error(e.message)
-  }
-}
-
 const fetchFavorites = async () => {
   try {
     const { data: favorites } = await instance.get('favorites')
@@ -71,17 +55,16 @@ const fetchFavorites = async () => {
 }
 
 const addToCart = (item) => {
-  item.isAdded = true
   cart.value.push(item)
 }
 
 const removeFromCart = (item) => {
   cart.value = cart.value.filter((cartItem) => cartItem.id !== item.id)
-  item.isAdded = false
 }
 
 const toggleCartItem = async (item) => {
   item.isAdded ? removeFromCart(item) : addToCart(item)
+  toggleAddedToCart(item.id)
 }
 
 const addToFavorite = async (item) => {
@@ -90,13 +73,11 @@ const addToFavorite = async (item) => {
 
     if (isFavorite) {
       await instance.delete(`favorites/${favoriteId}`)
-      item.favoriteId = null
+      toggleFavoriteItem(item.id, null)
     } else {
       const { data } = await instance.post('favorites', { productId })
-      item.favoriteId = data.id
+      toggleFavoriteItem(item.id, data.id)
     }
-
-    item.isFavorite = !isFavorite
   } catch (e) {
     console.error(e.message)
   }
@@ -141,13 +122,15 @@ const closeDrawer = () => {
   isDrawerOpen.value = false
 }
 
-onMounted(async () => {
-  await fetchItems()
+const updateItems = async () => {
+  await fetchItems(filters)
   await fetchFavorites()
   getCartFromLocalStorage()
-})
+}
 
-watch(filters, fetchItems)
+onMounted(updateItems)
+
+watch(filters, updateItems)
 watch(
   cart,
   () => {
