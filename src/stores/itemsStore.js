@@ -16,6 +16,9 @@ export const useItemsStore = defineStore('itemsStore', {
       this.items[itemIdx].isFavorite = !this.items[itemIdx].isFavorite
       this.items[itemIdx].favoriteId = favoriteId
     },
+    removeAllItemsFromCart() {
+      this.items = this.items.map((item) => ({ ...item, isAdded: false }))
+    },
     async fetchItems({ searchQuery, sortBy }) {
       try {
         const params = { sortBy }

@@ -1,9 +1,10 @@
 <script setup>
-import { onMounted, ref, reactive, computed, watch } from 'vue'
+import { onMounted, ref, reactive, watch } from 'vue'
 
 import { instance } from '@/api'
 
 import { useItemsStore } from '@/stores/itemsStore'
+import { useCartStore } from '@/stores/cartStore'
 import { storeToRefs } from 'pinia'
 
 import AppHeader from '@/components/AppHeader.vue'
@@ -14,9 +15,12 @@ import BaseSelect from '@/components/BaseSelect.vue'
 
 const itemsStore = useItemsStore()
 const { items } = storeToRefs(itemsStore)
-const { toggleAddedToCart, toggleFavoriteItem, fetchItems } = itemsStore
+const { toggleFavoriteItem, fetchItems } = itemsStore
 
-const cart = ref([])
+const cartStore = useCartStore()
+const { cart, totalPrice, vatPrice } = storeToRefs(cartStore)
+const { toggleCartItem, clearCart } = cartStore
+
 const isDrawerOpen = ref(false)
 const isLoading = ref(false)
 
@@ -24,12 +28,6 @@ const filters = reactive({
   searchQuery: '',
   sortBy: 'title'
 })
-
-const totalPrice = computed(() => {
-  return cart.value.reduce((acc, item) => acc + item.price, 0)
-})
-
-const vatPrice = computed(() => Math.round(totalPrice.value * 0.05))
 
 const onChangeSelect = (event) => {
   filters.sortBy = event.target.value
@@ -54,19 +52,6 @@ const fetchFavorites = async () => {
   }
 }
 
-const addToCart = (item) => {
-  cart.value.push(item)
-}
-
-const removeFromCart = (item) => {
-  cart.value = cart.value.filter((cartItem) => cartItem.id !== item.id)
-}
-
-const toggleCartItem = async (item) => {
-  item.isAdded ? removeFromCart(item) : addToCart(item)
-  toggleAddedToCart(item.id)
-}
-
 const addToFavorite = async (item) => {
   try {
     const { id: productId, favoriteId, isFavorite } = item
@@ -81,13 +66,6 @@ const addToFavorite = async (item) => {
   } catch (e) {
     console.error(e.message)
   }
-}
-
-const clearCart = () => {
-  cart.value = []
-  items.value = items.value.map((item) => {
-    return { ...item, isAdded: false }
-  })
 }
 
 const createOrder = async () => {
