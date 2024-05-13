@@ -15,7 +15,7 @@ import BaseSelect from '@/components/BaseSelect.vue'
 
 const itemsStore = useItemsStore()
 const { items } = storeToRefs(itemsStore)
-const { toggleFavoriteItem, fetchItems } = itemsStore
+const { updateAddedToCart, toggleFavoriteItem, fetchItems } = itemsStore
 
 const cartStore = useCartStore()
 const { cart, totalPrice, vatPrice } = storeToRefs(cartStore)
@@ -83,15 +83,6 @@ const createOrder = async () => {
   }
 }
 
-const getCartFromLocalStorage = () => {
-  const localCart = localStorage.getItem('cart')
-  cart.value = localCart ? JSON.parse(localCart) : []
-  items.value = items.value.map((item) => {
-    const cartItem = cart.value.find((cartItem) => cartItem.id === item.id)
-    return cartItem ? { ...item, isAdded: true } : item
-  })
-}
-
 const openDrawer = () => {
   isDrawerOpen.value = true
 }
@@ -103,19 +94,12 @@ const closeDrawer = () => {
 const updateItems = async () => {
   await fetchItems(filters)
   await fetchFavorites()
-  getCartFromLocalStorage()
+  updateAddedToCart()
 }
 
 onMounted(updateItems)
 
 watch(filters, updateItems)
-watch(
-  cart,
-  () => {
-    localStorage.setItem('cart', JSON.stringify(cart.value))
-  },
-  { deep: true }
-)
 </script>
 
 <template>
