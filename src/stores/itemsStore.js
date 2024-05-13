@@ -1,42 +1,50 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import { instance } from '@/api'
 
-export const useItemsStore = defineStore('itemsStore', {
-  state: () => ({
-    items: []
-  }),
+export const useItemsStore = defineStore('itemsStore', () => {
+  const items = ref([])
 
-  actions: {
-    toggleAddedToCart(itemId) {
-      const itemIdx = this.items.findIndex((item) => item.id === itemId)
-      this.items[itemIdx].isAdded = !this.items[itemIdx].isAdded
-    },
-    toggleFavoriteItem(itemId, favoriteId) {
-      const itemIdx = this.items.findIndex((item) => item.id === itemId)
-      this.items[itemIdx].isFavorite = !this.items[itemIdx].isFavorite
-      this.items[itemIdx].favoriteId = favoriteId
-    },
-    removeAllItemsFromCart() {
-      this.items = this.items.map((item) => ({ ...item, isAdded: false }))
-    },
-    async fetchItems({ searchQuery, sortBy }) {
-      try {
-        const params = { sortBy }
+  const toggleAddedToCart = (itemId) => {
+    const itemIdx = items.value.findIndex((item) => item.id === itemId)
+    items.value[itemIdx].isAdded = !items.value[itemIdx].isAdded
+  }
 
-        if (searchQuery) {
-          params.title = `*${searchQuery}*`
-        }
+  const toggleFavoriteItem = (itemId, favoriteId) => {
+    const itemIdx = items.value.findIndex((item) => item.id === itemId)
+    items.value[itemIdx].isFavorite = !items.value[itemIdx].isFavorite
+    items.value[itemIdx].favoriteId = favoriteId
+  }
 
-        const { data } = await instance.get('items', { params })
-        this.items = data.map((item) => ({
-          ...item,
-          isFavorite: false,
-          favoriteId: null,
-          isAdded: false
-        }))
-      } catch (e) {
-        console.error(e.message)
+  const removeAllItemsFromCart = () => {
+    items.value = items.value.map((item) => ({ ...item, isAdded: false }))
+  }
+
+  const fetchItems = async ({ searchQuery, sortBy }) => {
+    try {
+      const params = { sortBy }
+
+      if (searchQuery) {
+        params.title = `*${searchQuery}*`
       }
+
+      const { data } = await instance.get('items', { params })
+      items.value = data.map((item) => ({
+        ...item,
+        isFavorite: false,
+        favoriteId: null,
+        isAdded: false
+      }))
+    } catch (e) {
+      console.error(e.message)
     }
+  }
+
+  return {
+    items,
+    toggleAddedToCart,
+    toggleFavoriteItem,
+    removeAllItemsFromCart,
+    fetchItems
   }
 })
