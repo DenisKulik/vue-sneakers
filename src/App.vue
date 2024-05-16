@@ -2,11 +2,10 @@
 import { onMounted, ref, reactive, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import { instance } from '@/api'
-
 import { useItemsStore } from '@/stores/itemsStore'
 import { useCartStore } from '@/stores/cartStore'
 import { useFavoritesStore } from '@/stores/favoritesStore'
+import { useOrdersStore } from '@/stores/ordersStore'
 
 import AppHeader from '@/components/AppHeader.vue'
 import CardList from '@/components/CardList.vue'
@@ -20,13 +19,16 @@ const { updateAddedToCart, fetchItems } = itemsStore
 
 const cartStore = useCartStore()
 const { cart, totalPrice, vatPrice } = storeToRefs(cartStore)
-const { toggleCartItem, clearCart } = cartStore
+const { toggleCartItem } = cartStore
 
 const favoritesStore = useFavoritesStore()
 const { fetchFavorites, addToFavorite } = favoritesStore
 
+const ordersStore = useOrdersStore()
+const { isLoading } = storeToRefs(ordersStore)
+const { createOrder } = ordersStore
+
 const isDrawerOpen = ref(false)
-const isLoading = ref(false)
 
 const filters = reactive({
   searchQuery: '',
@@ -39,21 +41,6 @@ const onChangeSelect = (event) => {
 
 const onChangeInput = (event) => {
   filters.searchQuery = event.target.value
-}
-
-const createOrder = async () => {
-  try {
-    isLoading.value = true
-    await instance.post('orders', {
-      items: cart.value,
-      total: totalPrice.value
-    })
-    clearCart()
-  } catch (e) {
-    console.error(e.message)
-  } finally {
-    isLoading.value = false
-  }
 }
 
 const openDrawer = () => {
