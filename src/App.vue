@@ -1,11 +1,12 @@
 <script setup>
 import { onMounted, ref, reactive, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 
 import { instance } from '@/api'
 
 import { useItemsStore } from '@/stores/itemsStore'
 import { useCartStore } from '@/stores/cartStore'
-import { storeToRefs } from 'pinia'
+import { useFavoritesStore } from '@/stores/favoritesStore'
 
 import AppHeader from '@/components/AppHeader.vue'
 import CardList from '@/components/CardList.vue'
@@ -15,11 +16,14 @@ import BaseSelect from '@/components/BaseSelect.vue'
 
 const itemsStore = useItemsStore()
 const { items } = storeToRefs(itemsStore)
-const { updateAddedToCart, toggleFavoriteItem, fetchItems } = itemsStore
+const { updateAddedToCart, fetchItems } = itemsStore
 
 const cartStore = useCartStore()
 const { cart, totalPrice, vatPrice } = storeToRefs(cartStore)
 const { toggleCartItem, clearCart } = cartStore
+
+const favoritesStore = useFavoritesStore()
+const { fetchFavorites, addToFavorite } = favoritesStore
 
 const isDrawerOpen = ref(false)
 const isLoading = ref(false)
@@ -35,37 +39,6 @@ const onChangeSelect = (event) => {
 
 const onChangeInput = (event) => {
   filters.searchQuery = event.target.value
-}
-
-const fetchFavorites = async () => {
-  try {
-    const { data: favorites } = await instance.get('favorites')
-    items.value = items.value.map((item) => {
-      const favorite = favorites.find((favorite) => favorite.productId === item.id)
-
-      if (!favorite) return item
-
-      return { ...item, isFavorite: true, favoriteId: favorite.id }
-    })
-  } catch (e) {
-    console.error(e.message)
-  }
-}
-
-const addToFavorite = async (item) => {
-  try {
-    const { id: productId, favoriteId, isFavorite } = item
-
-    if (isFavorite) {
-      await instance.delete(`favorites/${favoriteId}`)
-      toggleFavoriteItem(item.id, null)
-    } else {
-      const { data } = await instance.post('favorites', { productId })
-      toggleFavoriteItem(item.id, data.id)
-    }
-  } catch (e) {
-    console.error(e.message)
-  }
 }
 
 const createOrder = async () => {

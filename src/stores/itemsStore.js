@@ -4,11 +4,13 @@ import { ref } from 'vue'
 import { instance } from '@/api'
 
 import { useCartStore } from './cartStore'
+import { useFavoritesStore } from './favoritesStore'
 
 export const useItemsStore = defineStore('itemsStore', () => {
   const items = ref([])
 
   const cartStore = useCartStore()
+  const favoritesStore = useFavoritesStore()
 
   const toggleAddedToCart = (itemId) => {
     const itemIdx = items.value.findIndex((item) => item.id === itemId)
@@ -19,6 +21,16 @@ export const useItemsStore = defineStore('itemsStore', () => {
     items.value = items.value.map((item) => {
       const cartItem = cartStore.cart.find((cartItem) => cartItem.id === item.id)
       return cartItem ? { ...item, isAdded: true } : item
+    })
+  }
+
+  const updateFavorites = () => {
+    items.value = items.value.map((item) => {
+      const favorite = favoritesStore.favorites.find((favorite) => favorite.productId === item.id)
+
+      if (!favorite) return item
+
+      return { ...item, isFavorite: true, favoriteId: favorite.id }
     })
   }
 
@@ -56,6 +68,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
     items,
     toggleAddedToCart,
     updateAddedToCart,
+    updateFavorites,
     toggleFavoriteItem,
     removeAllItemsFromCart,
     fetchItems
