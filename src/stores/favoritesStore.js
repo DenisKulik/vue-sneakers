@@ -9,11 +9,11 @@ export const useFavoritesStore = defineStore('favoritesStore', () => {
 
   const itemsStore = useItemsStore()
 
-  const fetchFavorites = async () => {
+  const fetchFavorites = async (isFavoriteView = false) => {
     try {
-      const { data } = await instance.get('favorites')
+      const { data } = await instance.get('favorites?_relations=items')
       favorites.value = data
-      itemsStore.updateFavorites()
+      isFavoriteView ? itemsStore.setItemsFromFavorites() : itemsStore.updateFavorites()
     } catch (e) {
       console.error(e.message)
     }
@@ -21,13 +21,13 @@ export const useFavoritesStore = defineStore('favoritesStore', () => {
 
   const addToFavorite = async (item) => {
     try {
-      const { id: productId, favoriteId, isFavorite } = item
+      const { id: item_id, favoriteId, isFavorite } = item
 
       if (isFavorite) {
         await instance.delete(`favorites/${favoriteId}`)
         itemsStore.toggleFavoriteItem(item.id, null)
       } else {
-        const { data } = await instance.post('favorites', { productId })
+        const { data } = await instance.post('favorites', { item_id })
         itemsStore.toggleFavoriteItem(item.id, data.id)
       }
     } catch (e) {

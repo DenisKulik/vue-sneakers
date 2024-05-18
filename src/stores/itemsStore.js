@@ -26,12 +26,20 @@ export const useItemsStore = defineStore('itemsStore', () => {
 
   const updateFavorites = () => {
     items.value = items.value.map((item) => {
-      const favorite = favoritesStore.favorites.find((favorite) => favorite.productId === item.id)
+      const favorite = favoritesStore.favorites.find((favorite) => favorite.item.id === item.id)
 
       if (!favorite) return item
 
       return { ...item, isFavorite: true, favoriteId: favorite.id }
     })
+  }
+
+  const setItemsFromFavorites = () => {
+    items.value = favoritesStore.favorites.map(({ id, item }) => ({
+      ...item,
+      isFavorite: true,
+      favoriteId: id
+    }))
   }
 
   const toggleFavoriteItem = (itemId, favoriteId) => {
@@ -69,6 +77,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
     toggleAddedToCart,
     updateAddedToCart,
     updateFavorites,
+    setItemsFromFavorites,
     toggleFavoriteItem,
     removeAllItemsFromCart,
     fetchItems

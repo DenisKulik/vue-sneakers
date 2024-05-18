@@ -28,10 +28,12 @@ const emit = defineEmits(['openDrawer'])
           <b>{{ totalPrice }} ₽</b>
         </div>
 
-        <div class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
-          <img src="/heart.svg" alt="Cart" />
-          <span>Закладки</span>
-        </div>
+        <RouterLink to="/favorites">
+          <div class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
+            <img src="/heart.svg" alt="Cart" />
+            <span>Закладки</span>
+          </div>
+        </RouterLink>
 
         <div class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
           <img src="/profile.svg" alt="Cart" />
