@@ -7,7 +7,6 @@ import { useOrdersStore } from '@/stores/ordersStore'
 
 import AppDrawer from '@/components/AppDrawer.vue'
 import AppHeader from '@/components/AppHeader.vue'
-import HomeView from '@/views/HomeView.vue'
 
 const cartStore = useCartStore()
 const { cart, totalPrice, vatPrice } = storeToRefs(cartStore)
@@ -42,7 +41,7 @@ const closeDrawer = () => {
   <div class="w-4/5 m-auto mt-14 bg-white rounded-xl shadow-xl">
     <AppHeader :total-price="totalPrice" @open-drawer="openDrawer" />
     <div class="p-10">
-      <HomeView />
+      <RouterView />
     </div>
   </div>
 </template>
