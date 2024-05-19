@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { toast } from 'vue3-toastify'
 
 import { instance } from '@/api'
 import { useItemsStore } from './itemsStore'
@@ -15,6 +16,7 @@ export const useFavoritesStore = defineStore('favoritesStore', () => {
       favorites.value = data
       isFavoriteView ? itemsStore.setItemsFromFavorites() : itemsStore.updateFavorites()
     } catch (e) {
+      toast.error(`Error: ${e.message}`)
       console.error(e.message)
     }
   }

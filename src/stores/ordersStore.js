@@ -1,5 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref } from 'vue'
+import { toast } from 'vue3-toastify'
 
 import { instance } from '@/api'
 import { useCartStore } from './cartStore'
@@ -21,8 +22,10 @@ export const useOrdersStore = defineStore('ordersStore', () => {
       })
       orderId.value = data.id
       cartStore.clearCart()
-      setTimeout(() => (orderId.value = null), 5000)
+      setTimeout(() => (orderId.value = null), 3000)
+      toast.success('Ваш заказ успешно оформлен!')
     } catch (e) {
+      toast.error(`Error: ${e.message}`)
       console.error(e.message)
     } finally {
       isLoading.value = false

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { toast } from 'vue3-toastify'
 
 import { instance } from '@/api'
 
@@ -68,6 +69,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
         isAdded: false
       }))
     } catch (e) {
+      toast.error(`Error: ${e.message}`)
       console.error(e.message)
     }
   }
