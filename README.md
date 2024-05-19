@@ -1,14 +1,18 @@
-# vue-sneakers
+# Vue Sneakers
 
 This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
+![CI](https://github.com/DenisKulik/vue-sneakers/actions/workflows/github-actions.yml/badge.svg)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+[Demo](https://deniskulik.github.io/vue-sneakers/)
 
-## Customize configuration
+## Built With
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+This is a vue-sneakers project built using `JavaScript`, `Vue`, `Vue Router`, `Pinia`, `axios`, `MOKKY`, `TailwindCSS` and `Vite`.
+
+## Screenshots
+
+![screenshots](./screenshots/vue-sneakers.png)
 
 ## Project Setup
 
@@ -33,3 +37,4 @@ pnpm build
 ```sh
 pnpm lint
 ```
+
