@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, reactive, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import debounce from 'lodash.debounce'
 
 import { useItemsStore } from '@/stores/itemsStore'
 import { useFavoritesStore } from '@/stores/favoritesStore'
@@ -29,9 +30,9 @@ const onChangeSelect = (event) => {
   filters.sortBy = event.target.value
 }
 
-const onChangeInput = (event) => {
+const onChangeInput = debounce((event) => {
   filters.searchQuery = event.target.value
-}
+}, 300)
 
 const updateItems = async () => {
   await fetchItems(filters)
