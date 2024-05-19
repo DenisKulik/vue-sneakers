@@ -1,9 +1,12 @@
 <script setup>
-defineProps({
-  totalPrice: Number
-})
+import { storeToRefs } from 'pinia'
+
+import { useCartStore } from '@/stores/cartStore'
 
 const emit = defineEmits(['openDrawer'])
+
+const cartStore = useCartStore()
+const { totalPrice } = storeToRefs(cartStore)
 </script>
 
 <template>
@@ -20,13 +23,13 @@ const emit = defineEmits(['openDrawer'])
 
     <nav class="flex items-center">
       <div class="flex items-center gap-10">
-        <div
+        <button
           class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black"
           @click.stop="emit('openDrawer')"
         >
           <img src="/cart.svg" alt="Cart" />
           <b>{{ totalPrice }} ₽</b>
-        </div>
+        </button>
 
         <RouterLink to="/favorites">
           <div class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
@@ -34,11 +37,6 @@ const emit = defineEmits(['openDrawer'])
             <span>Закладки</span>
           </div>
         </RouterLink>
-
-        <div class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
-          <img src="/profile.svg" alt="Cart" />
-          <span>Профиль</span>
-        </div>
       </div>
     </nav>
   </header>

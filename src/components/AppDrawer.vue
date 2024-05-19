@@ -1,21 +1,42 @@
 <script setup>
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+
+import { useCartStore } from '@/stores/cartStore'
+import { useOrdersStore } from '@/stores/ordersStore'
+
 import CartItem from '@/components/CartItem.vue'
 import InfoBlock from '@/components/InfoBlock.vue'
 
-defineProps({
-  cart: Array,
-  totalPrice: Number,
-  vatPrice: Number,
-  isLoading: Boolean
-})
+const emit = defineEmits(['close'])
 
-const emit = defineEmits(['close', 'removeItem', 'createOrder'])
+const cartStore = useCartStore()
+const { cart, totalPrice, vatPrice } = storeToRefs(cartStore)
+const { toggleCartItem } = cartStore
+
+const ordersStore = useOrdersStore()
+const { isLoading, orderId } = storeToRefs(ordersStore)
+const { createOrder } = ordersStore
+
+const infoBlock = computed(() => {
+  return orderId.value
+    ? {
+        title: 'Заказ оформлен!',
+        imageUrl: 'order-success-icon.png',
+        description: `Ваш заказ #${orderId.value} скоро будет передан курьерской доставке`
+      }
+    : {
+        title: 'Корзина пустая',
+        imageUrl: 'package-icon.png',
+        description: 'Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.'
+      }
+})
 </script>
 
 <template>
   <div class="fixed top-0 left-0 w-full h-full bg-slate-900 opacity-50 z-10"></div>
   <div class="flex flex-col fixed top-0 right-0 w-96 h-full p-8 bg-white z-20">
-    <div class="flex items-center gap-5 mb-7">
+    <button class="flex items-center gap-5 mb-7">
       <img
         src="/arrow-next-black.svg"
         alt="Close"
@@ -23,13 +44,13 @@ const emit = defineEmits(['close', 'removeItem', 'createOrder'])
         @click="emit('close')"
       />
       <h2 class="text-2xl font-bold">Корзина</h2>
-    </div>
+    </button>
 
     <div v-if="!cart.length" class="h-full flex">
       <InfoBlock
-        title="Корзина пустая"
-        image-url="package-icon.png"
-        description="Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ."
+        :title="infoBlock.title"
+        :image-url="infoBlock.imageUrl"
+        :description="infoBlock.description"
       />
     </div>
 
@@ -38,7 +59,7 @@ const emit = defineEmits(['close', 'removeItem', 'createOrder'])
         v-for="item in cart"
         :key="item.id"
         :item="item"
-        @on-remove="emit('removeItem', item)"
+        @on-remove="toggleCartItem(item)"
       />
     </div>
 
@@ -58,7 +79,7 @@ const emit = defineEmits(['close', 'removeItem', 'createOrder'])
       <button
         class="flex justify-center items-center gap-5 w-full mt-4 py-3 text-white bg-lime-500 rounded-xl hover:bg-lime-600 active:bg-lime-700 disabled:bg-slate-300 transition"
         :disabled="!cart.length || isLoading"
-        @click.stop="emit('createOrder')"
+        @click.stop="createOrder"
       >
         {{ isLoading ? 'Загрузка...' : 'Оформить заказ' }}
         <img src="/arrow-next.svg" alt="Checkout" class="ml-3" />

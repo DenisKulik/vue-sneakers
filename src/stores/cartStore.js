@@ -15,7 +15,7 @@ export const useCartStore = defineStore('cartStore', () => {
   })
 
   const vatPrice = computed(() => {
-    return totalPrice.value * 0.05
+    return Math.round(totalPrice.value * 0.05)
   })
 
   function addToCart(item) {
