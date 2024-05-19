@@ -14,12 +14,12 @@ const emit = defineEmits(['onRemove'])
         <p class="mb-2">{{ item.title }}</p>
         <b>{{ item.price }} ₽</b>
       </div>
-      <img
+      <button
         class="cursor-pointer opacity-50 hover:opacity-100 transition"
-        src="/close.svg"
-        alt="Remove"
         @click.stop="emit('onRemove', item)"
-      />
+      >
+        <img src="/close.svg" alt="Remove" />
+      </button>
     </div>
   </div>
 </template>

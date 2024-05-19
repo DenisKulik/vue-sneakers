@@ -35,7 +35,7 @@ onMounted(updateItems)
 
 <template>
   <div class="flex flex-1 justify-between items-center mb-8">
-    <div class="flex items-center gap-5 mb-7">
+    <button class="flex items-center gap-5 mb-7">
       <img
         src="/arrow-next-black.svg"
         alt="Close"
@@ -43,7 +43,15 @@ onMounted(updateItems)
         @click="goBack"
       />
       <h2 class="text-3xl font-bold">Мои закладки</h2>
-    </div>
+    </button>
   </div>
-  <CardList :items="items" @add-to-favorite="addToFavorite" @add-to-cart="toggleCartItem" />
+  <div>
+    <CardList
+      v-if="items.length"
+      :items="items"
+      @add-to-favorite="addToFavorite"
+      @add-to-cart="toggleCartItem"
+    />
+    <div v-else class="text-center text-gray-400">Закладок не найдено</div>
+  </div>
 </template>
