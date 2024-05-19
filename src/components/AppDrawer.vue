@@ -5,6 +5,8 @@ import { storeToRefs } from 'pinia'
 import { useCartStore } from '@/stores/cartStore'
 import { useOrdersStore } from '@/stores/ordersStore'
 
+import BaseButton from '@/components/BaseButton.vue'
+import ButtonPrev from '@/components/ButtonPrev.vue'
 import CartItem from '@/components/CartItem.vue'
 import InfoBlock from '@/components/InfoBlock.vue'
 
@@ -36,15 +38,10 @@ const infoBlock = computed(() => {
 <template>
   <div class="fixed top-0 left-0 w-full h-full bg-slate-900 opacity-50 z-10"></div>
   <div class="flex flex-col fixed top-0 right-0 w-96 h-full p-8 bg-white z-20">
-    <button class="flex items-center gap-5 mb-7">
-      <img
-        src="/arrow-next-black.svg"
-        alt="Close"
-        class="cursor-pointer rotate-180 opacity-30 hover:opacity-100 hover:-translate-x-1 transition"
-        @click="emit('close')"
-      />
+    <div class="flex items-center gap-5 mb-7">
+      <ButtonPrev @on-prev="emit('close')" />
       <h2 class="text-2xl font-bold">Корзина</h2>
-    </button>
+    </div>
 
     <div v-if="!cart.length" class="h-full flex">
       <InfoBlock
@@ -70,20 +67,17 @@ const infoBlock = computed(() => {
         <b>{{ totalPrice }} ₽</b>
       </div>
 
-      <div class="flex justify-between gap-2">
+      <div class="flex justify-between gap-2 mb-4">
         <span>Налог 5%:</span>
         <div class="flex-1 border-b border-dashed"></div>
         <b>{{ vatPrice }} ₽</b>
       </div>
 
-      <button
-        class="flex justify-center items-center gap-5 w-full mt-4 py-3 text-white bg-lime-500 rounded-xl hover:bg-lime-600 active:bg-lime-700 disabled:bg-slate-300 transition"
-        :disabled="!cart.length || isLoading"
-        @click.stop="createOrder"
-      >
-        {{ isLoading ? 'Загрузка...' : 'Оформить заказ' }}
-        <img src="/arrow-next.svg" alt="Checkout" class="ml-3" />
-      </button>
+      <BaseButton
+        :title="isLoading ? 'Загрузка...' : 'Оформить заказ'"
+        :disabled="isLoading"
+        @on-click="createOrder"
+      />
     </div>
   </div>
 </template>

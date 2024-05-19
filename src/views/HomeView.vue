@@ -8,6 +8,7 @@ import { useFavoritesStore } from '@/stores/favoritesStore'
 import { useCartStore } from '@/stores/cartStore'
 
 import CardList from '@/components/CardList.vue'
+import PageTitle from '@/components/PageTitle.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseSelect from '@/components/BaseSelect.vue'
 
@@ -47,7 +48,7 @@ watch(filters, updateItems)
 
 <template>
   <div class="flex flex-1 justify-between items-center mb-10">
-    <h2 class="mb-8 text-3xl font-bold">Все кроссовки</h2>
+    <PageTitle title="Все кроссовки" />
     <div class="flex items-center gap-5">
       <BaseSelect @change="onChangeSelect" />
       <BaseInput :value="filters.searchQuery" @input="onChangeInput" />
